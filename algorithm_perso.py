@@ -112,16 +112,18 @@ class Encoding:
         self.constellation=peak_local_max(self.S,min_distance=50,exclude_border=False)
 
         #Hachage
-        dt=1
-        df=1500
+        dt=self.time_window
+        df=self.freq_window
         hashes=[]
         for ancre in self.constellation:
-            v_ia = {"t":ancre[0],"hash":[]}
+            v_ia = {"t":ancre[1],"hash":[]}
             for i in self.constellation:
-               if (0<i[0]-ancre[0]<=dt) and (abs(i[1]-ancre[1])<df):
-                   v_ia["hash"].append(np.array([i[0]-ancre[0],ancre[1],i[1]]))
+               if (0<i[1]-ancre[1]<=dt) and (abs(i[0]-ancre[0])<df):
+                   v_ia["hash"].append(np.array([i[1]-ancre[1],ancre[0],i[0]]))
             hashes.append(v_ia)
         self.hashes=hashes
+        
+        self.anchors = self.constellation
                   
 
 
@@ -229,6 +231,14 @@ class Matching:
         #    hashcodes that match
         # 2. implementing a criterion to decide whether or not both extracts
         #    match
+        self.offsets = self.matching[:,0]-self.matching[:,1]
+        
+        self.criterion = True
+        offset_ref = self.offsets[0]
+        for offset in self.offsets:
+           if offset - offset_ref > 1e-6:
+              self.criterion = False
+        
        
              
     def display_scatterplot(self):

@@ -44,6 +44,11 @@ if __name__ == '__main__':
 
     # 5: TODO: Using the class Matching, compare the fingerprint to all the 
     # fingerprints in the database
+    matcher = Matching(encoder.hashes, encoder.hashes)
+    matcher.display_histogram()
+    matcher.display_scatterplot()
+    # Tracé des histogrammes de correspondance
+    
 
 
 

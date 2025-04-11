@@ -97,14 +97,32 @@ class Encoding:
 
         # Insert code here
         
-      # Short-time Fourier transform using scipy implementation
+         # Short-time Fourier transform using scipy implementation
       
+         #Spectrogramme
         nperseg = self.nperseg
         noverlap = self.noverlap
         freq, times, coefs = stft(s, fs, nperseg=nperseg, noverlap=noverlap)
         self.S = np.abs(coefs)
         self.t = times
         self.f = freq
+
+      
+      #Constellation
+        self.constellation=peak_local_max(self.S,min_distance=50,exclude_border=False)
+
+        #Hachage
+        dt=1
+        df=1500
+        hashes=[]
+        for ancre in self.constellation:
+            v_ia=[]
+            for i in self.constellation:
+               if (0<i[0]-ancre[0]<=dt) and (abs(i[1]-ancre[1])<df):
+                   v_ia.append([i[0]-ancre[0],ancre[1],i[1]])
+            hashes.append(v_ia)
+        self.hashes=hashes
+                  
 
 
     def display_spectrogram(self):

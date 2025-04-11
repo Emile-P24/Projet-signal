@@ -48,7 +48,11 @@ class Encoding:
         """
 
         # Insert code here
-        
+        self.nperseg=nperseg
+        self.noverlap=noverlap
+        self.min_distance=min_distance
+        self.time_window=time_window
+        self.freq_window=freq_window
         # Window size = 128 samples, overlap of 32 samples,
         
 

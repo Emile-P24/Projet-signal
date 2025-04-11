@@ -116,10 +116,10 @@ class Encoding:
         df=1500
         hashes=[]
         for ancre in self.constellation:
-            v_ia=[]
+            v_ia = {"t":ancre[0],"hash":[]}
             for i in self.constellation:
                if (0<i[0]-ancre[0]<=dt) and (abs(i[1]-ancre[1])<df):
-                   v_ia.append([i[0]-ancre[0],ancre[1],i[1]])
+                   v_ia["hash"].append(np.array([i[0]-ancre[0],ancre[1],i[1]]))
             hashes.append(v_ia)
         self.hashes=hashes
                   

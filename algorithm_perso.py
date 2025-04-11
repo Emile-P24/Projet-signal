@@ -95,8 +95,8 @@ class Encoding:
         
       # Short-time Fourier transform using scipy implementation
       
-        nperseg = 64
-        noverlap = 32
+        nperseg = self.nperseg
+        noverlap = self.noverlap
         freq, times, coefs = stft(s, fs, nperseg=nperseg, noverlap=noverlap)
         self.S = np.abs(coefs)
         self.t = times

@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 
 from scipy.io.wavfile import read
 from scipy.signal import spectrogram
+from scipy.signal import stft, istft
 from skimage.feature import peak_local_max
 
 # ----------------------------------------------------------------------------
@@ -27,7 +28,7 @@ class Encoding:
 
     """
 
-    def __init__(self):
+    def __init__(self,nperseg,noverlap,min_distance,time_window,freq_window):
 
         """
         Class constructor
@@ -49,8 +50,7 @@ class Encoding:
         # Insert code here
         
         # Window size = 128 samples, overlap of 32 samples,
-        window_size = 128
-        overlap = 32
+        
 
 
     def process(self, fs, s):
@@ -86,11 +86,21 @@ class Encoding:
         s: numpy array
            sampled signal
         """
-
+      
         self.fs = fs
         self.s = s
+        
 
         # Insert code here
+        
+      # Short-time Fourier transform using scipy implementation
+      
+        nperseg = 64
+        noverlap = 32
+        freq, times, coefs = stft(s, fs, nperseg=nperseg, noverlap=noverlap)
+        self.S = np.abs(coefs)
+        self.t = times
+        self.f = freq
 
 
     def display_spectrogram(self):

@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from scipy.io.wavfile import read
-from algorithm import *
+from algorithm_perso import *
 
 # ----------------------------------------------
 # Run the script

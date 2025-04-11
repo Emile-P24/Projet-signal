@@ -118,10 +118,11 @@ class Encoding:
            when set equal to True, the anchors are displayed on the
            spectrogram
         """
-
+        display_anchors = True
         plt.pcolormesh(self.t, self.f/1e3, self.S, shading='gouraud')
         plt.xlabel('Time [s]')
         plt.ylabel('Frequency [kHz]')
+        
         if(display_anchors):
             plt.scatter(self.anchors[:, 0], self.anchors[:, 1]/1e3)
         plt.show()

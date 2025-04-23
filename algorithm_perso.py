@@ -111,12 +111,10 @@ class Encoding:
       
       #Constellation
         pics=peak_local_max(self.S,min_distance=50,exclude_border=False)
-        print(pics)
         constellation=[]
         for pic in pics:
             constellation.append([freq[pic[0]],times[pic[1]]])
         self.constellation=np.array(constellation)
-        print(self.constellation)
 
         #Hachage
         dt=self.time_window

@@ -102,25 +102,31 @@ class Encoding:
          #Spectrogramme
         nperseg = self.nperseg
         noverlap = self.noverlap
-        freq, times, coefs = stft(s, fs, nperseg=nperseg, noverlap=noverlap)
-        self.S = np.abs(coefs)
+        freq, times,coefs=spectrogram(s,fs,nperseg=nperseg,noverlap=noverlap)
+        #self.S = np.abs(coefs)
+        self.S=coefs
         self.t = times
         self.f = freq
 
       
       #Constellation
-        self.constellation=peak_local_max(self.S,min_distance=50,exclude_border=False)
+        pics=peak_local_max(self.S,min_distance=50,exclude_border=False)
+        print(pics)
+        constellation=[]
+        for pic in pics:
+            constellation.append([freq[pic[0]],times[pic[1]]])
+        self.constellation=np.array(constellation)
+        print(self.constellation)
 
         #Hachage
         dt=self.time_window
         df=self.freq_window
         hashes=[]
         for ancre in self.constellation:
-            v_ia = {"t":ancre[1],"hash":np.array([])}
             for i in self.constellation:
                if (0<i[1]-ancre[1]<=dt) and (abs(i[0]-ancre[0])<df):
-                   v_ia["hash"]= np.stack((v_ia["hash"],np.array([i[1]-ancre[1],ancre[0],i[0]])))
-            hashes.append(v_ia)
+                   v_ia = {"t":ancre[1],"hash":np.array([i[1]-ancre[1],ancre[0],i[0]])}
+                   hashes.append(v_ia)
         self.hashes=hashes
         
         self.anchors = self.constellation
@@ -138,7 +144,7 @@ class Encoding:
            when set equal to True, the anchors are displayed on the
            spectrogram
         """
-        display_anchors = True
+        display_anchors = False
         plt.pcolormesh(self.t, self.f/1e3, self.S, shading='gouraud')
         plt.xlabel('Time [s]')
         plt.ylabel('Frequency [kHz]')
@@ -217,15 +223,13 @@ class Matching:
 
         # Establish matches
         self.matching = []
-        i = 0
         for hc in self.hashes2:
              t = hc['t']
              h = hc['hash'][np.newaxis, :]
              dist = np.sum(np.abs(hashcodes - h), axis=1)
-             mask = (dist == 0)
-             if (mask != 0).any() and i < len(times):
-                 self.matching.append(np.array([times[mask][i], t]))
-                 i+=1
+             mask = (dist < 1e-6)
+             if (mask != 0).any():
+                 self.matching.append(np.array([times[mask][0], t]))
         self.matching = np.array(self.matching)
 
         # TODO: complete the implementation of the class by

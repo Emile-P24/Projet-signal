@@ -41,6 +41,7 @@ if __name__ == '__main__':
     # 4: Use the encoder to extract a signature from the extract
     encoder.process(fs, s[tmin:tmin + duration])
     hashes = encoder.hashes
+    #encoder.display_spectrogram()
 
     # 5: TODO: Using the class Matching, compare the fingerprint to all the 
     # fingerprints in the database
@@ -51,8 +52,8 @@ if __name__ == '__main__':
     for titre in titres:
       matcher = Matching(encoder.hashes, titre["hashcodes"])
       print(titre["song"])
-      matcher.display_histogram()
-      #matcher.display_scatterplot()
+      #matcher.display_histogram()
+      matcher.display_scatterplot()
     # Tracé des histogrammes de correspondance
     
 

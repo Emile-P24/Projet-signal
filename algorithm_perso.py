@@ -116,10 +116,10 @@ class Encoding:
         df=self.freq_window
         hashes=[]
         for ancre in self.constellation:
-            v_ia = {"t":ancre[1],"hash":[]}
+            v_ia = {"t":ancre[1],"hash":np.array([])}
             for i in self.constellation:
                if (0<i[1]-ancre[1]<=dt) and (abs(i[0]-ancre[0])<df):
-                   v_ia["hash"].append(np.array([i[1]-ancre[1],ancre[0],i[0]]))
+                   v_ia["hash"]= np.stack((v_ia["hash"],np.array([i[1]-ancre[1],ancre[0],i[0]])))
             hashes.append(v_ia)
         self.hashes=hashes
         
@@ -217,26 +217,47 @@ class Matching:
 
         # Establish matches
         self.matching = []
+        i = 0
         for hc in self.hashes2:
              t = hc['t']
              h = hc['hash'][np.newaxis, :]
              dist = np.sum(np.abs(hashcodes - h), axis=1)
              mask = (dist < 1e-6)
              if (mask != 0).any():
-                 self.matching.append(np.array([times[mask][0], t]))
+                 self.matching.append(np.array([times[mask][i], t]))
+             i+=1
         self.matching = np.array(self.matching)
+        print(self.matching)
 
         # TODO: complete the implementation of the class by
         # 1. creating an array "offset" containing the time offsets of the 
         #    hashcodes that match
         # 2. implementing a criterion to decide whether or not both extracts
         #    match
+        
         self.offsets = self.matching[:,0]-self.matching[:,1]
         
         self.criterion = True
-        offset_ref = self.offsets[0]
-        for offset in self.offsets:
-           if offset - offset_ref > 1e-6:
+        
+        def groupe_erreur(offsets, erreur=0.5):
+         offsets = sorted(offsets)
+         groupes = []
+         groupe_i = [offsets[0]]
+
+         for num in offsets[1:]:
+            if abs(num - groupe_i[-1]) <= erreur:
+                  groupe_i.append(num)
+            else:
+                  groupes.append(groupe_i)
+                  groupe_i = [num]
+
+         groupes.append(groupe_i)
+         return groupes
+        
+        compteur = (len(groupe_i) for groupe_i in groupe_erreur(self.offsets, erreur=0.5))
+        pic_max = max(compteur)
+        for pic in compteur:
+           if pic_max < 10*pic :
               self.criterion = False
         
        

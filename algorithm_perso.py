@@ -222,12 +222,11 @@ class Matching:
              t = hc['t']
              h = hc['hash'][np.newaxis, :]
              dist = np.sum(np.abs(hashcodes - h), axis=1)
-             mask = (dist < 1e-6)
-             if (mask != 0).any():
+             mask = (dist == 0)
+             if (mask != 0).any() and i < len(times):
                  self.matching.append(np.array([times[mask][i], t]))
-             i+=1
+                 i+=1
         self.matching = np.array(self.matching)
-        print(self.matching)
 
         # TODO: complete the implementation of the class by
         # 1. creating an array "offset" containing the time offsets of the 

@@ -52,7 +52,7 @@ if __name__ == '__main__':
       matcher = Matching(encoder.hashes, titre["hashcodes"])
       print(titre["song"])
       matcher.display_histogram()
-      #matcher.display_scatterplot()
+      matcher.display_scatterplot()
     # Tracé des histogrammes de correspondance
     
 

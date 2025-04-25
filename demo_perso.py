@@ -48,12 +48,13 @@ if __name__ == '__main__':
       titres = pickle.load(fichier)
     
     
+    # Tracé des histogrammes de correspondance
     for titre in titres:
       matcher = Matching(encoder.hashes, titre["hashcodes"])
       print(titre["song"])
       matcher.display_histogram()
       matcher.display_scatterplot()
-    # Tracé des histogrammes de correspondance
+    
     
 
 

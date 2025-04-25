@@ -238,30 +238,13 @@ class Matching:
         
         self.offsets = self.matching[:,0]-self.matching[:,1]
         
-        self.criterion = True
+        self.criterion = False
         
-        def groupe_erreur(offsets, erreur=0.5):
-         offsets = sorted(offsets)
-         groupes = []
-         groupe_i = [offsets[0]]
-
-         for num in offsets[1:]:
-            if abs(num - groupe_i[-1]) <= erreur:
-                  groupe_i.append(num)
-            else:
-                  groupes.append(groupe_i)
-                  groupe_i = [num]
-
-         groupes.append(groupe_i)
-         return groupes
-        
-        compteur = (len(groupe_i) for groupe_i in groupe_erreur(self.offsets, erreur=0.5))
-        pic_max = max(compteur)
-        for pic in compteur:
-           if pic_max < 10*pic :
-              self.criterion = False
-        
-       
+        nombre, bin_lim = np.histogram(self.offsets, bins=100)
+        pic_max = np.max(nombre)
+        if pic_max > 100:
+            self.criterion = True
+      
              
     def display_scatterplot(self):
 

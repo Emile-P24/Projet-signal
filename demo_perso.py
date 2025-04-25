@@ -49,14 +49,34 @@ if __name__ == '__main__':
       titres = pickle.load(fichier)
     
     
+      
     # Tracé des histogrammes de correspondance
-    for titre in titres:
-      matcher = Matching(encoder.hashes, titre["hashcodes"])
-      print(titre["song"])
-      #matcher.display_histogram()
-      matcher.display_scatterplot()
-    # Tracé des histogrammes de correspondance
-    
+  
+    n = len(titres)
+    rows = int(np.ceil(n / 3))
+    fig, axes = plt.subplots(rows, 3, figsize=(15, 5 * rows))
+    axes = axes.flatten()
+
+    for i, titre in enumerate(titres):
+        matcher = Matching(encoder.hashes, titre["hashcodes"])
+        offsets = matcher.offsets
+
+        axes[i].hist(offsets, bins=100)
+        label = "RECONNUE" if matcher.criterion else "NON RECONNUE"
+        if matcher.criterion:
+          axes[i].set_title(f"{titre['song']} : {label}", fontsize=10, color = "green")
+        else:
+          axes[i].set_title(f"{titre['song']} : {label}", fontsize=10, color = "red")
+        
+        axes[i].set_xticks([])
+        axes[i].set_yticks([])
+
+    for j in range(i + 1, len(axes)):
+        fig.delaxes(axes[j])
+
+    #plt.tight_layout()
+    plt.show()
+  
 
 
 
